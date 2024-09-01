@@ -21,5 +21,5 @@ Follow instructions here for rebuilding apache2 debian package: https://www.linu
 It's a really bad idea to install unsigned, binary packages from unofficial sources, but for those that prefer the YOLO approach, download and install the provided .deb files with dpkg -i.
 
 #### PHP script
-Install libapache2-mod-php and copy php script to /var/html/www, delete index.html. Script shows TLS RTT in microseconds.
+Enable mod_ssl and default site. Install libapache2-mod-php and copy php script to /var/html/www, delete index.html. Script shows TLS RTT in microseconds.
 
