@@ -1,0 +1,49 @@
+diff -Nur a/modules/ssl/ssl_engine_kernel.c b/modules/ssl/ssl_engine_kernel.c
+--- a/modules/ssl/ssl_engine_kernel.c	2024-07-04 09:58:17.000000000 -0600
++++ b/modules/ssl/ssl_engine_kernel.c	2024-08-26 22:05:40.164757003 -0600
+@@ -1515,6 +1515,7 @@
+     "SSL_SRP_USER",
+     "SSL_SRP_USERINFO",
+ #endif
++    "SSL_HANDSHAKE_RTT",
+     NULL
+ };
+ 
+diff -Nur a/modules/ssl/ssl_engine_vars.c b/modules/ssl/ssl_engine_vars.c
+--- a/modules/ssl/ssl_engine_vars.c	2022-02-24 13:37:08.000000000 -0700
++++ b/modules/ssl/ssl_engine_vars.c	2024-08-30 06:56:34.537893862 -0600
+@@ -52,6 +52,7 @@
+ static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, SSLConnRec *sslconn);
+ static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, SSLConnRec *sslconn, char *var);
+ static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
++static char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl);
+ static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var);
+ static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
+ 
+@@ -387,6 +388,9 @@
+     else if (ssl != NULL && strlen(var) >= 6 && strcEQn(var, "CIPHER", 6)) {
+         result = ssl_var_lookup_ssl_cipher(p, sslconn, var+6);
+     }
++    else if(ssl != NULL && strcEQ(var, "HANDSHAKE_RTT")) {
++        result = ssl_var_lookup_ssl_handshake_rtt(p, ssl);
++    }
+     else if (ssl != NULL && strlen(var) > 18 && strcEQn(var, "CLIENT_CERT_CHAIN_", 18)) {
+         sk = SSL_get_peer_cert_chain(ssl);
+         result = ssl_var_lookup_ssl_cert_chain(p, sk, var+18);
+@@ -879,6 +883,16 @@
+     return;
+ }
+ 
++static char *ssl_var_lookup_ssl_handshake_rtt(apr_pool_t *p, SSL *ssl)
++{
++#if OPENSSL_VERSION_NUMBER >= 0x30200000L
++    apr_uint64_t rtt;
++    if (SSL_get_handshake_rtt(ssl, &rtt) > 0)
++        return apr_psprintf(p, "%" APR_UINT64_T_FMT, rtt);
++#endif
++    return NULL;
++}
++
+ static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
+ {
+     if (strEQ(var, "INTERFACE")) {
