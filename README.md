@@ -2,7 +2,7 @@
 Implementing TLS RTT in apache
 
 ## Status
-PR was accepted (@notroj was extremely helpful) and merged. https://github.com/apache/httpd/commit/79990b070f2e5374e1add982342b1fa71f5d189e
+PR was merged (@notroj was extremely helpful). https://github.com/apache/httpd/commit/79990b070f2e5374e1add982342b1fa71f5d189e
 
 Target release unknown.
 
