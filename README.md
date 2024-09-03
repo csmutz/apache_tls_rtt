@@ -6,6 +6,9 @@ PR was merged (@notroj was extremely helpful). https://github.com/apache/httpd/c
 
 Target release version unknown.
 
+## Testing
+Limited testing revealed very accurate results, this appears to function as expected.
+
 ## Demonstration
 A patch that can be applied to existing distribution packages is provided. Note that OpenSSL > 3.2 is needed for proper operation.
 
